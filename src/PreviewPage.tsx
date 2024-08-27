@@ -28,20 +28,33 @@ const Preview: React.FC = () => {
     }
   }, []);
 
-  const goBack = () => {
+  const onClickBack = () => {
     navigation.goBack()
+  };
+
+  const onClickMinimize = () => {
+
   };
 
   return (
     <View style={styles.container}>
       <ZegoTextureView ref={previewRef} style={styles.fullscreenView} />
 
-      <TouchableOpacity style={styles.backBtnPos} onPress={goBack}>
-        <Image 
-          style={styles.backBtnImage} 
-          source={require('./resources/icon_nav_back.png')} // 替换为你的图片路径
-        />
-      </TouchableOpacity>
+      <View style={styles.top_btn_container}>
+        <TouchableOpacity style={styles.backBtnPos} onPress={onClickBack}>
+          <Image 
+            style={styles.backBtnImage} 
+            source={require('./resources/icon_nav_back.png')} // 替换为你的图片路径
+          />
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.minimizeBtnPos} onPress={onClickMinimize}>
+          <Image 
+            style={styles.minimizeBtnImage} 
+            source={require('./resources/icon_minimize.png')} // 替换为你的图片路径
+          />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -53,13 +66,22 @@ const styles = StyleSheet.create({
   fullscreenView: {
     flex: 1,
   },
-  backBtnPos: {
+  top_btn_container: {
+    flexDirection: 'row',
     position: 'absolute',
-    left: 10,
-    top: 10,
-    padding: 10,
+    top: 15,
+    left: 15,
+  },
+  backBtnPos: {
   },
   backBtnImage: {
+    width: 20,
+    height: 20,
+  },
+  minimizeBtnPos: {
+    marginLeft: 50,
+  },
+  minimizeBtnImage: {
     width: 20,
     height: 20,
   },
