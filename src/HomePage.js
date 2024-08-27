@@ -27,6 +27,7 @@ import { withNavigation } from '@react-navigation/compat';
 
 import ZegoExpressEngine, {ZegoScenario} from 'zego-express-engine-reactnative';
 import KeyCenter from '../KeyCenter';
+import MinimizingHelper from './minimizing_helper';
 
 const granted = (Platform.OS == 'android' ? PermissionsAndroid.check(
                                               PermissionsAndroid.PERMISSIONS.CAMERA,
@@ -48,8 +49,16 @@ class Home extends Component {
     title: 'Home',
   };
 
+  initMinimize() {
+    MinimizingHelper.instance().initMinimize();
+    MinimizingHelper.instance().registerWillMaximized('Home', () => {
+      this.navigateToPreview();
+    });
+  }
+
   onClickPreview() {
     console.log('onClickPreview');
+    MinimizingHelper.instance().notifyRestore();
     this.navigateToPreview();
   }
 
@@ -84,6 +93,8 @@ class Home extends Component {
         engine.getVersion().then((ver) => {
           console.log("Express SDK Version: " + ver)
         });
+
+        this.initMinimize();
     });
   }
 

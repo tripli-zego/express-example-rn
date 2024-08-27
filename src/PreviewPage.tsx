@@ -3,6 +3,7 @@ import { View, TouchableOpacity, StyleSheet, findNodeHandle, Image } from 'react
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 import ZegoExpressEngine, {ZegoPublishChannel, ZegoTextureView} from 'zego-express-engine-reactnative';
+import MinimizingHelper from './minimizing_helper';
 
 const Preview: React.FC = () => {
   const navigation = useNavigation();
@@ -21,19 +22,21 @@ const Preview: React.FC = () => {
     ZegoExpressEngine.instance().startPublishingStream(userID, ZegoPublishChannel.Main, undefined);
 
     return () => {
-      ZegoExpressEngine.instance().stopPublishingStream(ZegoPublishChannel.Main);
-      ZegoExpressEngine.instance().stopPreview(ZegoPublishChannel.Main);
-      ZegoExpressEngine.instance().logoutRoom(roomID);
-      console.log(`logoutRoom, room:${roomID}`);
     }
   }, []);
 
   const onClickBack = () => {
+    ZegoExpressEngine.instance().stopPublishingStream(ZegoPublishChannel.Main);
+    ZegoExpressEngine.instance().stopPreview(ZegoPublishChannel.Main);
+    ZegoExpressEngine.instance().logoutRoom(roomID);
+    console.log(`logoutRoom, room:${roomID}`);
+  
     navigation.goBack()
   };
 
   const onClickMinimize = () => {
-
+    MinimizingHelper.instance().notifyMinimize();
+    navigation.goBack();
   };
 
   return (
