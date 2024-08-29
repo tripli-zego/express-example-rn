@@ -5,7 +5,10 @@ import {
     PanResponder,
     StyleSheet,
     useWindowDimensions,
+    findNodeHandle,
 } from 'react-native';
+
+import ZegoExpressEngine, {ZegoPublishChannel, ZegoTextureView} from 'zego-express-engine-reactnative';
 
 import MinimizingHelper from './minimizing_helper';
 
@@ -74,6 +77,8 @@ export default function FloatingMinimizedView(props: any) {
         MinimizingHelper.instance().notifyMaximize();
     }
 
+    const miniTextureViewRef = useRef();
+
     useEffect(() => {
         console.log('FloatingMinimizedView register init');
         MinimizingHelper.instance().registerNeedsInit('FloatingMinimizedView', () => {
@@ -104,6 +109,13 @@ export default function FloatingMinimizedView(props: any) {
         }
     }, [isInit]);
 
+    useEffect(() => {
+        if (isVisable) {
+            console.log('startPreview')
+            ZegoExpressEngine.instance().startPreview({"reactTag": findNodeHandle(miniTextureViewRef.current), "viewMode": 0, "backgroundColor": 0}, ZegoPublishChannel.Main);
+        }
+    }, [isVisable]);
+
     return (
         <Animated.View
             style={[
@@ -123,6 +135,7 @@ export default function FloatingMinimizedView(props: any) {
                     }
                 ]}
             >
+                <ZegoTextureView ref={miniTextureViewRef} style={styles.fullscreenView} />
             </View>
         </Animated.View>
     );
@@ -140,5 +153,8 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 8
+    },
+    fullscreenView: {
+        flex: 1,
     },
 });
