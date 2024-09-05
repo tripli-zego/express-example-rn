@@ -4,6 +4,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 
 import ZegoExpressEngine, {ZegoPublishChannel, ZegoTextureView} from 'zego-express-engine-reactnative';
 import MinimizingHelper from './minimizing_helper';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Preview: React.FC = () => {
   const navigation = useNavigation();
@@ -39,11 +40,13 @@ const Preview: React.FC = () => {
     navigation.goBack();
   };
 
+  const insets = useSafeAreaInsets();
+
   return (
     <View style={styles.container}>
       <ZegoTextureView ref={previewRef} style={styles.fullscreenView} />
 
-      <View style={styles.top_btn_container}>
+      <View style={[styles.top_btn_container, {top: insets.top}]}>
         <TouchableOpacity style={styles.backBtnPos} onPress={onClickBack}>
           <Image 
             style={styles.backBtnImage} 
@@ -72,7 +75,6 @@ const styles = StyleSheet.create({
   top_btn_container: {
     flexDirection: 'row',
     position: 'absolute',
-    top: 15,
     left: 15,
   },
   backBtnPos: {
