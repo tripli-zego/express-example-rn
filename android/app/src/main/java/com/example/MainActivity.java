@@ -15,6 +15,7 @@ public class MainActivity extends ReactActivity {
   private final String TAG = "MainActivity";
 
   private PictureInPictureParams pipParams = null;
+  private boolean pipAutoEnterEnabled = false;
 
   /**
    * Returns the name of the main component registered from JavaScript. This is used to schedule
@@ -55,7 +56,7 @@ public class MainActivity extends ReactActivity {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
       pipParams = new PictureInPictureParams.Builder()
               .setAspectRatio(rational)
-              .setAutoEnterEnabled(true)
+              .setAutoEnterEnabled(pipAutoEnterEnabled)
               .build();
       setPictureInPictureParams(pipParams);
     } else {
@@ -70,8 +71,15 @@ public class MainActivity extends ReactActivity {
     super.onUserLeaveHint();
     Log.i(TAG, "onUserLeaveHint");
 
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S && pipAutoEnterEnabled) {
       enterPictureInPictureMode(pipParams);
     }
+  }
+
+  public void notifyAndroidPagePipEnable(boolean pipEnable, String pageName) {
+    Log.i(TAG, String.format("notifyPage: %s, pipEnable: %b", pageName, pipEnable));
+
+    pipAutoEnterEnabled = pipEnable;
+    updatePictureInPictureParams();
   }
 }

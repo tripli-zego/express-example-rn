@@ -2,10 +2,11 @@ import React, { useEffect, useRef } from 'react';
 import { findNodeHandle, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-root-toast';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 
 import ZegoExpressEngine, {ZegoTextureView} from 'zego-express-engine-reactnative';
 import MinimizingHelper from './minimizing_helper';
+import PipModuleHelper from './PipModuleHelper';
 
 const Audience: React.FC = () => {
   const TAG = 'Audience'
@@ -16,6 +17,17 @@ const Audience: React.FC = () => {
   const { roomID, userID, hostStreamID } = params;
   
   const textureRef = useRef();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log(`${TAG} is focused`);
+      PipModuleHelper.notifyAndroidPagePipEnable(true, TAG)
+
+      return () => {
+        console.log(`${TAG} is unfocused`);
+      };
+    }, [])
+  );
 
   useEffect(() => {
     console.log(TAG, `loginRoom, room:${roomID}, userID:${userID}`);

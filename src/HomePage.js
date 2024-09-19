@@ -30,6 +30,7 @@ import ZegoExpressEngine, {ZegoScenario} from 'zego-express-engine-reactnative';
 import KeyCenter from '../KeyCenter';
 import MinimizingHelper from './minimizing_helper';
 import RoomConstants from './RoomConstants';
+import PipModuleHelper from './PipModuleHelper';
 
 const granted = (Platform.OS == 'android' ? PermissionsAndroid.check(
                                               PermissionsAndroid.PERMISSIONS.CAMERA,
@@ -119,10 +120,23 @@ class Home extends Component {
 
         this.initMinimize();
     });
+
+    this.focusListener = this.props.navigation.addListener('focus', () => {
+      console.log(`${this.TAG} is focused`);
+
+      PipModuleHelper.notifyAndroidPagePipEnable(false, this.TAG)
+    });
   }
 
   componentWillUnmount() {
     console.log(this.TAG, 'componentWillUnmount');
+
+    if (this.focusListener) {
+      console.log(this.TAG, 'is unfocused');
+
+      this.focusListener();
+      this.focusListener = null
+    }
 
     if (ZegoExpressEngine.instance()) {
       console.log(this.TAG, '[LZP] destroyEngine')
