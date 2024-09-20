@@ -1,8 +1,10 @@
 node_modules
 android/.gradle/
 ios/Pods/
+Podfile.lock
 yarn.lock
 build
 local.properties
 .idea
+xcshareddata
 xcuserdata
