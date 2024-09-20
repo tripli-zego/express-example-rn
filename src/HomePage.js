@@ -121,6 +121,7 @@ class Home extends Component {
         this.initMinimize();
     });
 
+    PipModuleHelper.init()
     this.focusListener = this.props.navigation.addListener('focus', () => {
       console.log(`${this.TAG} is focused`);
 
@@ -137,6 +138,7 @@ class Home extends Component {
       this.focusListener();
       this.focusListener = null
     }
+    PipModuleHelper.uninit()
 
     if (ZegoExpressEngine.instance()) {
       console.log(this.TAG, '[LZP] destroyEngine')

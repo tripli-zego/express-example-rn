@@ -1,6 +1,7 @@
 package com.example;
 
 import android.app.PictureInPictureParams;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,8 +9,10 @@ import android.util.Rational;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
+import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactActivityDelegate;
+import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter;
 
 public class MainActivity extends ReactActivity {
   private final String TAG = "MainActivity";
@@ -81,5 +84,15 @@ public class MainActivity extends ReactActivity {
 
     pipAutoEnterEnabled = pipEnable;
     updatePictureInPictureParams();
+  }
+
+  @Override
+  public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, Configuration newConfig) {
+    super.onPictureInPictureModeChanged(isInPictureInPictureMode);
+
+    ReactApplicationContext context = PipModule.reactContext;
+    if (context.hasActiveReactInstance()) {
+      context.getJSModule(RCTDeviceEventEmitter.class).emit("onPipModeChanged", isInPictureInPictureMode);
+    }
   }
 }

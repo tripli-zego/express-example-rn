@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { findNodeHandle, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-root-toast';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -17,14 +17,22 @@ const Audience: React.FC = () => {
   const { roomID, userID, hostStreamID } = params;
   
   const textureRef = useRef();
+  const [isShowTopButton, setIsShowTopButton] = useState(true);
 
   useFocusEffect(
     React.useCallback(() => {
       console.log(`${TAG} is focused`);
       PipModuleHelper.notifyAndroidPagePipEnable(true, TAG)
+      PipModuleHelper.registerPipModeChangedListener(TAG, (data) => {
+        if (typeof data === 'boolean') {
+          setIsShowTopButton(!data)
+        }
+      })
 
       return () => {
         console.log(`${TAG} is unfocused`);
+        // @ts-ignore
+        PipModuleHelper.registerPipModeChangedListener(TAG, null)
       };
     }, [])
   );
@@ -72,7 +80,7 @@ const Audience: React.FC = () => {
     <View style={styles.container}>
       <ZegoTextureView ref={textureRef} style={styles.fullscreenView} />
 
-      <View style={[styles.top_btn_container, {top: insets.top}]}>
+      { isShowTopButton ? <View style={[styles.top_btn_container, {top: insets.top}]}>
         <TouchableOpacity style={styles.backBtnPos} onPress={onClickBack}>
           <Image 
             style={styles.backBtnImage} 
@@ -86,7 +94,7 @@ const Audience: React.FC = () => {
             source={require('./resources/icon_minimize.png')} // 替换为你的图片路径
           />
         </TouchableOpacity>
-      </View>
+      </View> : null }
     </View>
   );
 };
