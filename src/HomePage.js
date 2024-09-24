@@ -15,7 +15,8 @@ import {
   Button,
   StatusBar,
   PermissionsAndroid,
-  Platform
+  Platform,
+  Text
 } from 'react-native';
 
 import {
@@ -70,9 +71,27 @@ class Home extends Component {
     });
   }
 
+  onClickAudience() {
+    console.log('onClickAudience');
+    MinimizingHelper.instance().notifyRestore();
+    this.navigateToAudience();
+  }
+
+  navigateToAudience() {
+    MinimizingHelper.instance().registerWillMaximized('Home', () => {
+      this.navigateToAudience();
+    });
+    this.props.navigation.navigate('Audience', {
+      roomID: RoomConstants.roomID,
+      userID: RoomConstants.audienceID,
+      hostStreamID: RoomConstants.hostID,
+    });
+  }
+
   componentDidMount() {
     console.log(this.TAG, "componentDidMount")
 
+    ZegoExpressEngine.setEngineConfig({advancedConfig: {"preview_clear_last_frame": "true"}})
     let profile = {appID: appID, appSign: appSign, scenario: ZegoScenario.Default}
     ZegoExpressEngine.createEngineWithProfile(
         profile
@@ -124,9 +143,25 @@ class Home extends Component {
             <Header />
 
             <View style={styles.body}>
-              <View style={styles.sectionContainer}>
+              <View style={styles.descContainer}>
+                <Text style={styles.title}>roomID: {RoomConstants.roomID}      userID: {RoomConstants.hostID}</Text>
+              </View>
+              <View style={styles.buttomContainer}>
                 <Button onPress={this.onClickPreview.bind(this)}
                         title="Start preview and publish"/>
+              </View>
+              <View style={styles.descContainer}>
+              </View>
+              <View style={styles.descContainer}>
+              </View>
+              <View style={styles.descContainer}>
+                <Text style={styles.title}>roomID: {RoomConstants.roomID}      userID: {RoomConstants.audienceID}</Text>
+              </View>
+              <View style={styles.buttomContainer}>
+                <Button onPress={this.onClickAudience.bind(this)}
+                        title="Watch host"/>
+              </View>
+              <View style={styles.descContainer}>
               </View>
             </View>
           </ScrollView>
@@ -147,12 +182,16 @@ const styles = StyleSheet.create({
   body: {
     backgroundColor: Colors.white,
   },
-  sectionContainer: {
-    marginTop: 32,
+  descContainer: {
+    marginTop: 20,
     paddingHorizontal: 24,
   },
-  sectionTitle: {
-    fontSize: 24,
+  buttomContainer: {
+    marginTop: 10,
+    paddingHorizontal: 24,
+  },
+  title: {
+    fontSize: 18,
     fontWeight: '600',
     color: Colors.black,
   },

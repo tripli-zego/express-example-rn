@@ -4,29 +4,26 @@ import Toast from 'react-native-root-toast';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
-import ZegoExpressEngine, {ZegoPublishChannel, ZegoTextureView} from 'zego-express-engine-reactnative';
+import ZegoExpressEngine, {ZegoTextureView} from 'zego-express-engine-reactnative';
 import MinimizingHelper from './minimizing_helper';
 
-const Preview: React.FC = () => {
-  const TAG = 'Preview'
-  
+const Audience: React.FC = () => {
+  const TAG = 'Audience'
+
   const navigation = useNavigation();
 
   const { params } = useRoute();
-  const { roomID, userID } = params;
-  const hostStreamID = userID;
+  const { roomID, userID, hostStreamID } = params;
   
-  const previewRef = useRef();
-  
+  const textureRef = useRef();
+
   useEffect(() => {
     console.log(TAG, `loginRoom, room:${roomID}, userID:${userID}`);
     ZegoExpressEngine.instance().loginRoom(
-      roomID, 
-      {"userID": userID, "userName": "Host"}, 
-      undefined
+      roomID, {"userID": userID, "userName": "Audience"}, undefined
     ).then((loginResult) => {
       if (loginResult.errorCode != 0 && loginResult.errorCode != 1002001) {
-        console.error(`loginRoom, result:${loginResult.errorCode}, message:${loginResult.extendedData}`)
+        console.error(TAG, `loginRoom, result:${loginResult.errorCode}, message:${loginResult.extendedData}`)
         Toast.show(`Failed to login the room, errorCode: ${loginResult.errorCode}.`, {
           duration: Toast.durations.LONG,
           position: Toast.positions.CENTER,
@@ -35,27 +32,16 @@ const Preview: React.FC = () => {
         return
       }
 
-      console.log(TAG, 'startPreview')
-      ZegoExpressEngine.instance().startPreview(
-        {"reactTag": findNodeHandle(previewRef.current), "viewMode": 0, "backgroundColor": 0}, 
-        ZegoPublishChannel.Main
-      );
-
-      console.log(TAG, 'startPublishingStream')
-      ZegoExpressEngine.instance().startPublishingStream(
-        hostStreamID, 
-        ZegoPublishChannel.Main, 
-        undefined
-      );
-    })
+      console.log(TAG, 'startPlayingStream')
+      ZegoExpressEngine.instance().startPlayingStream(hostStreamID, {"reactTag": findNodeHandle(textureRef.current), "viewMode": 0, "backgroundColor": 0}, {})
+    });
 
     return () => {
     }
   }, []);
 
   const onClickBack = () => {
-    ZegoExpressEngine.instance().stopPublishingStream(ZegoPublishChannel.Main);
-    ZegoExpressEngine.instance().stopPreview(ZegoPublishChannel.Main);
+    ZegoExpressEngine.instance().stopPlayingStream(hostStreamID);
     ZegoExpressEngine.instance().logoutRoom(roomID);
     console.log(TAG, `logoutRoom, room:${roomID}`);
   
@@ -63,7 +49,7 @@ const Preview: React.FC = () => {
   };
 
   const onClickMinimize = () => {
-    MinimizingHelper.instance().setStreamActionInMinimized('Preview', roomID, hostStreamID);
+    MinimizingHelper.instance().setStreamActionInMinimized('PlayingStream', roomID, hostStreamID);
     MinimizingHelper.instance().notifyMinimize();
     navigation.goBack();
   };
@@ -72,7 +58,7 @@ const Preview: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <ZegoTextureView ref={previewRef} style={styles.fullscreenView} />
+      <ZegoTextureView ref={textureRef} style={styles.fullscreenView} />
 
       <View style={[styles.top_btn_container, {top: insets.top}]}>
         <TouchableOpacity style={styles.backBtnPos} onPress={onClickBack}>
@@ -128,4 +114,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Preview;
+export default Audience;

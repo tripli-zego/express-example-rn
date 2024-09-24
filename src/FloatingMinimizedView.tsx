@@ -102,6 +102,9 @@ export default function FloatingMinimizedView(props: any) {
 
                 ZegoExpressEngine.instance().stopPublishingStream(ZegoPublishChannel.Main)  // for disable publish if needs
 
+                let streamID = MinimizingHelper.instance()._getActionStreamID();
+                ZegoExpressEngine.instance().stopPlayingStream(streamID)
+
                 let roomID = MinimizingHelper.instance()._getActionRoomID();
                 ZegoExpressEngine.instance().logoutRoom(roomID)
                 console.log(TAG, `logoutRoom, room:${roomID}`);
@@ -121,6 +124,10 @@ export default function FloatingMinimizedView(props: any) {
             if (MinimizingHelper.instance()._getStreamAction() === 'Preview') {
                 console.log(TAG, 'startPreview')
                 ZegoExpressEngine.instance().startPreview({"reactTag": findNodeHandle(miniTextureViewRef.current), "viewMode": 0, "backgroundColor": 0}, ZegoPublishChannel.Main);
+            } else if (MinimizingHelper.instance()._getStreamAction() === 'PlayingStream') {
+                console.log(TAG, 'startPlayingStream')
+                let streamID = MinimizingHelper.instance()._getActionStreamID();
+                ZegoExpressEngine.instance().startPlayingStream(streamID, {"reactTag": findNodeHandle(miniTextureViewRef.current), "viewMode": 0, "backgroundColor": 0}, {})
             }
         }
     }, [isVisable]);
