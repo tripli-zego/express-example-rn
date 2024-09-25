@@ -4,6 +4,7 @@ import { Animated, findNodeHandle, PanResponder, StyleSheet, useWindowDimensions
 import ZegoExpressEngine, {ZegoPublishChannel, ZegoTextureView} from 'zego-express-engine-reactnative';
 
 import MinimizingHelper from './minimizing_helper';
+import StreamHelper from './StreamHelper';
 
 export default function FloatingMinimizedView(props: any) {
     const TAG = 'FloatingMinimizedView';
@@ -102,12 +103,12 @@ export default function FloatingMinimizedView(props: any) {
 
                 ZegoExpressEngine.instance().stopPublishingStream(ZegoPublishChannel.Main)  // for disable publish if needs
 
-                let streamID = MinimizingHelper.instance()._getActionStreamID();
-                ZegoExpressEngine.instance().stopPlayingStream(streamID)
-
                 let roomID = MinimizingHelper.instance()._getActionRoomID();
                 ZegoExpressEngine.instance().logoutRoom(roomID)
                 console.log(TAG, `logoutRoom, room:${roomID}`);
+
+                let streamID = MinimizingHelper.instance()._getActionStreamID();
+                StreamHelper.stopPlayingStream(streamID)    // for disable custom video render if needs, should be called after logoutroom
 
                 MinimizingHelper.instance().setStreamActionInMinimized('', '', '');
             });
@@ -127,7 +128,7 @@ export default function FloatingMinimizedView(props: any) {
             } else if (MinimizingHelper.instance()._getStreamAction() === 'PlayingStream') {
                 console.log(TAG, 'startPlayingStream')
                 let streamID = MinimizingHelper.instance()._getActionStreamID();
-                ZegoExpressEngine.instance().startPlayingStream(streamID, {"reactTag": findNodeHandle(miniTextureViewRef.current), "viewMode": 0, "backgroundColor": 0}, {})
+                StreamHelper.startPlayingStream(streamID, findNodeHandle(miniTextureViewRef.current))
             }
         }
     }, [isVisable]);

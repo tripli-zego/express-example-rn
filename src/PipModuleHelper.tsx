@@ -29,6 +29,7 @@ export default class PipModuleHelper {
       PipModule.notifyAndroidPagePipEnable(pipEnable, pageName);
     }
 
+    // Only supports Android temporarily.
     static registerPipModeChangedListener = (pageName: string, listener: (data: any) => void) => {
       if (typeof listener === 'function') {
         console.log(this.TAG, 'register PipModeChanged listener')

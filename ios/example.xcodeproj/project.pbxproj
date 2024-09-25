@@ -13,6 +13,9 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		361734DA2C9D31ED00F6D1A4 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 361734D92C9D31ED00F6D1A4 /* PrivacyInfo.xcprivacy */; };
+		361734E32C9D8B8900F6D1A4 /* PipManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 361734E22C9D8B8900F6D1A4 /* PipManager.m */; };
+		3648598C2CA422AE009FB8B3 /* KitRemoteView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3648598B2CA422AE009FB8B3 /* KitRemoteView.m */; };
+		3648598F2CA42B75009FB8B3 /* PipModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 3648598E2CA42B75009FB8B3 /* PipModule.m */; };
 		7699B88040F8A987B510C191 /* libPods-example-exampleTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-example-exampleTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
@@ -39,6 +42,12 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = example/main.m; sourceTree = "<group>"; };
 		19F6CBCC0A4E27FBF8BF4A61 /* libPods-example-exampleTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-example-exampleTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		361734D92C9D31ED00F6D1A4 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		361734E12C9D8B8900F6D1A4 /* PipManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PipManager.h; path = example/PipManager.h; sourceTree = "<group>"; };
+		361734E22C9D8B8900F6D1A4 /* PipManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PipManager.m; path = example/PipManager.m; sourceTree = "<group>"; };
+		3648598A2CA422AE009FB8B3 /* KitRemoteView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KitRemoteView.h; path = example/KitRemoteView.h; sourceTree = "<group>"; };
+		3648598B2CA422AE009FB8B3 /* KitRemoteView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = KitRemoteView.m; path = example/KitRemoteView.m; sourceTree = "<group>"; };
+		3648598D2CA42B75009FB8B3 /* PipModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PipModule.h; path = example/PipModule.h; sourceTree = "<group>"; };
+		3648598E2CA42B75009FB8B3 /* PipModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PipModule.m; path = example/PipModule.m; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-example.debug.xcconfig"; path = "Target Support Files/Pods-example/Pods-example.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-example.release.xcconfig"; path = "Target Support Files/Pods-example/Pods-example.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-example-exampleTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-example-exampleTests.debug.xcconfig"; path = "Target Support Files/Pods-example-exampleTests/Pods-example-exampleTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -88,12 +97,18 @@
 		13B07FAE1A68108700A75B9A /* example */ = {
 			isa = PBXGroup;
 			children = (
+				3648598D2CA42B75009FB8B3 /* PipModule.h */,
+				3648598E2CA42B75009FB8B3 /* PipModule.m */,
+				361734E12C9D8B8900F6D1A4 /* PipManager.h */,
+				361734E22C9D8B8900F6D1A4 /* PipManager.m */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				3648598A2CA422AE009FB8B3 /* KitRemoteView.h */,
+				3648598B2CA422AE009FB8B3 /* KitRemoteView.m */,
 			);
 			name = example;
 			sourceTree = "<group>";
@@ -418,6 +433,9 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				361734E32C9D8B8900F6D1A4 /* PipManager.m in Sources */,
+				3648598F2CA42B75009FB8B3 /* PipModule.m in Sources */,
+				3648598C2CA422AE009FB8B3 /* KitRemoteView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

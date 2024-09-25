@@ -7,6 +7,7 @@ import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/nativ
 import ZegoExpressEngine, {ZegoTextureView} from 'zego-express-engine-reactnative';
 import MinimizingHelper from './minimizing_helper';
 import PipModuleHelper from './PipModuleHelper';
+import StreamHelper from './StreamHelper';
 
 const Audience: React.FC = () => {
   const TAG = 'Audience'
@@ -53,7 +54,8 @@ const Audience: React.FC = () => {
       }
 
       console.log(TAG, 'startPlayingStream')
-      ZegoExpressEngine.instance().startPlayingStream(hostStreamID, {"reactTag": findNodeHandle(textureRef.current), "viewMode": 0, "backgroundColor": 0}, {})
+      StreamHelper.setIosPipStreamID(hostStreamID)
+      StreamHelper.startPlayingStream(hostStreamID, findNodeHandle(textureRef.current));    
     });
 
     return () => {
@@ -61,7 +63,8 @@ const Audience: React.FC = () => {
   }, []);
 
   const onClickBack = () => {
-    ZegoExpressEngine.instance().stopPlayingStream(hostStreamID);
+    StreamHelper.stopPlayingStream(hostStreamID);
+    StreamHelper.setIosPipStreamID('')
     ZegoExpressEngine.instance().logoutRoom(roomID);
     console.log(TAG, `logoutRoom, room:${roomID}`);
   
