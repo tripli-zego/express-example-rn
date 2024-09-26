@@ -1,6 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack';
-import PreviewPage from './PreviewPage'; // 确保路径正确
+
 import HomePage from './HomePage';
+import PreviewPage from './PreviewPage';
 
 const Stack = createStackNavigator();
 

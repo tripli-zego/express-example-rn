@@ -1,12 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import {
-    View,
-    Animated,
-    PanResponder,
-    StyleSheet,
-    useWindowDimensions,
-    findNodeHandle,
-} from 'react-native';
+import { Animated, findNodeHandle, PanResponder, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import ZegoExpressEngine, {ZegoPublishChannel, ZegoTextureView} from 'zego-express-engine-reactnative';
 
@@ -74,18 +67,18 @@ export default function FloatingMinimizedView(props: any) {
         setFloatViewInfo({ width, height });
     }, []);
     const pressedHandle = async () => {
-        MinimizingHelper.instance().notifyMaximize();
+        MinimizingHelper.instance()._notifyMaximize();
     }
 
     const miniTextureViewRef = useRef();
 
     useEffect(() => {
-        console.log('FloatingMinimizedView register init');
-        MinimizingHelper.instance().registerNeedsInit('FloatingMinimizedView', () => {
+        console.log(TAG, 'FloatingMinimizedView register init');
+        MinimizingHelper.instance()._registerNeedsInit('FloatingMinimizedView', () => {
             setIsInit(true);
         });
         return () => {
-            MinimizingHelper.instance().registerNeedsInit('FloatingMinimizedView');
+            MinimizingHelper.instance()._registerNeedsInit('FloatingMinimizedView');
         };
     }, []);
 
@@ -93,26 +86,42 @@ export default function FloatingMinimizedView(props: any) {
         if (isInit) {
             console.log(`${TAG} start init`);
 
-            MinimizingHelper.instance().registerWillMinimized(TAG, () => {
-                console.log(`${TAG} visable`)
+            MinimizingHelper.instance()._registerWillMinimized(TAG, () => {
+                console.log(`${TAG} visable(minimized)`)
                 setIsVisable(true);
             });
 
             MinimizingHelper.instance().registerWillMaximized(TAG, () => {
-                console.log(`${TAG} invisable`)
+                console.log(`${TAG} invisable(maximized)`)
                 setIsVisable(false);
+            });
+
+            MinimizingHelper.instance()._registerWillRestore(TAG, () => {
+                console.log(`${TAG} invisable(restore)`)
+                setIsVisable(false);
+
+                ZegoExpressEngine.instance().stopPublishingStream(ZegoPublishChannel.Main)  // for disable publish if needs
+
+                let roomID = MinimizingHelper.instance()._getActionRoomID();
+                ZegoExpressEngine.instance().logoutRoom(roomID)
+                console.log(TAG, `logoutRoom, room:${roomID}`);
+
+                MinimizingHelper.instance().setStreamActionInMinimized('', '', '');
             });
         }
         return () => {
-            MinimizingHelper.instance().registerWillMinimized(TAG);
+            MinimizingHelper.instance()._registerWillMinimized(TAG);
             MinimizingHelper.instance().registerWillMaximized(TAG);
+            MinimizingHelper.instance()._registerWillRestore(TAG);
         }
     }, [isInit]);
 
     useEffect(() => {
         if (isVisable) {
-            console.log('startPreview')
-            ZegoExpressEngine.instance().startPreview({"reactTag": findNodeHandle(miniTextureViewRef.current), "viewMode": 0, "backgroundColor": 0}, ZegoPublishChannel.Main);
+            if (MinimizingHelper.instance()._getStreamAction() === 'Preview') {
+                console.log(TAG, 'startPreview')
+                ZegoExpressEngine.instance().startPreview({"reactTag": findNodeHandle(miniTextureViewRef.current), "viewMode": 0, "backgroundColor": 0}, ZegoPublishChannel.Main);
+            }
         }
     }, [isVisable]);
 
@@ -152,7 +161,8 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
-        elevation: 8
+        elevation: 8,
+        backgroundColor: 'gray'
     },
     fullscreenView: {
         flex: 1,

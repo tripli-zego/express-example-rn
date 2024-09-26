@@ -4,6 +4,11 @@ export default class MinimizingHelper {
     _onNeedsInitCallbackMap: { [index: string]: (data?: any) => void } = {};
     _onWindowMinimizeCallbackMap: { [index: string]: (data?: any) => void } = {};
     _onWindowMaximizeCallbackMap: { [index: string]: (data?: any) => void } = {};
+    _onWindowRestoreCallbackMap: { [index: string]: (data?: any) => void } = {};
+
+    _streamAction: string = '';
+    _actionRoomID: string = '';
+    _actionStreamID: string = '';
 
     constructor() { }
 
@@ -14,7 +19,7 @@ export default class MinimizingHelper {
     }
 
     // init
-    registerNeedsInit(callbackID: string, callback?: (data: any) => void) {
+    _registerNeedsInit(callbackID: string, callback?: (data: any) => void) {
         if (callback !== undefined) {
             console.log(`register needsInit, callbackID:${callbackID}`);
         } else {
@@ -43,7 +48,7 @@ export default class MinimizingHelper {
     }
 
     // minimized
-    registerWillMinimized(callbackID: string, callback?: (data: any) => void) {
+    _registerWillMinimized(callbackID: string, callback?: (data: any) => void) {
         if (callback !== undefined) {
             console.log(`register willMinimized, callbackID:${callbackID}`);
         } else {
@@ -55,6 +60,24 @@ export default class MinimizingHelper {
         } else {
             this._onWindowMinimizeCallbackMap[callbackID] = callback;
         }
+    }
+
+    setStreamActionInMinimized(action: string, roomID: string, streamID: string) {
+        this._streamAction = action;
+        this._actionRoomID = roomID;
+        this._actionStreamID = streamID;
+    }
+
+    _getStreamAction() {
+        return this._streamAction;
+    }
+
+    _getActionRoomID() {
+        return this._actionRoomID;
+    }
+
+    _getActionStreamID() {
+        return this._actionStreamID;
     }
 
     notifyMinimize() {
@@ -83,7 +106,7 @@ export default class MinimizingHelper {
         }
     }
 
-    notifyMaximize() {
+    _notifyMaximize() {
         console.log('notifyMaximize dispatch');
         this._isMinimize = false;
 
@@ -95,12 +118,26 @@ export default class MinimizingHelper {
     }
 
     // restore
+    _registerWillRestore(callbackID: string, callback?: (data: any) => void) {
+        if (callback !== undefined) {
+            console.log(`register willRestore, callbackID:${callbackID}`);
+        } else {
+            console.log(`register willRestore, callbackID:${callbackID} removed`);
+        }
+
+        if (typeof callback !== 'function') {
+            delete this._onWindowRestoreCallbackMap[callbackID];
+        } else {
+            this._onWindowRestoreCallbackMap[callbackID] = callback;
+        }
+    }
+
     notifyRestore() {
         console.log('notifyRestore only for FloatingMinimizedView');
         this._isMinimize = false;
 
-        if (this._onWindowMaximizeCallbackMap['FloatingMinimizedView']) {
-            this._onWindowMaximizeCallbackMap['FloatingMinimizedView']();
+        if (this._onWindowRestoreCallbackMap['FloatingMinimizedView']) {
+            this._onWindowRestoreCallbackMap['FloatingMinimizedView']();
         }
     }
 }

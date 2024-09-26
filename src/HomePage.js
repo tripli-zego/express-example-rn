@@ -28,6 +28,7 @@ import { withNavigation } from '@react-navigation/compat';
 import ZegoExpressEngine, {ZegoScenario} from 'zego-express-engine-reactnative';
 import KeyCenter from '../KeyCenter';
 import MinimizingHelper from './minimizing_helper';
+import RoomConstants from './RoomConstants';
 
 const granted = (Platform.OS == 'android' ? PermissionsAndroid.check(
                                               PermissionsAndroid.PERMISSIONS.CAMERA,
@@ -36,9 +37,9 @@ const granted = (Platform.OS == 'android' ? PermissionsAndroid.check(
 const appID = KeyCenter.appID
 const appSign = KeyCenter.appSign
 
-const userID = '70000'
-
 class Home extends Component {
+  TAG = 'Home'
+
   constructor(props) {
     super(props)
 
@@ -51,32 +52,35 @@ class Home extends Component {
 
   initMinimize() {
     MinimizingHelper.instance().initMinimize();
-    MinimizingHelper.instance().registerWillMaximized('Home', () => {
-      this.navigateToPreview();
-    });
   }
 
   onClickPreview() {
-    console.log('onClickPreview');
+    console.log(this.TAG, 'onClickPreview');
     MinimizingHelper.instance().notifyRestore();
     this.navigateToPreview();
   }
 
   navigateToPreview() {
+    MinimizingHelper.instance().registerWillMaximized('Home', () => {
+      this.navigateToPreview();
+    });
     this.props.navigation.navigate('Preview', {
-      userID: userID
+      roomID: RoomConstants.roomID,
+      userID: RoomConstants.hostID,
     });
   }
 
   componentDidMount() {
-    console.log("componentDidMount")
-    let profile = {appID: appID, appSign: appSign, scenario: ZegoScenario.General}
-    
-    ZegoExpressEngine.createEngineWithProfile(profile).then((engine) => {
+    console.log(this.TAG, "componentDidMount")
+
+    let profile = {appID: appID, appSign: appSign, scenario: ZegoScenario.Default}
+    ZegoExpressEngine.createEngineWithProfile(
+        profile
+    ).then((engine) => {
         // 动态获取设备权限（android）
         if (Platform.OS == 'android') {
           granted.then((data)=>{
-            console.log("是否已有相机、麦克风权限: " + data)
+            console.log(this.TAG, "是否已有相机、麦克风权限: " + data)
             if(!data) {
               const permissions = [
                 PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
@@ -86,12 +90,12 @@ class Home extends Component {
               PermissionsAndroid.requestMultiple(permissions)
               }
           }).catch((err)=>{
-            console.log("check err: " + err.toString())
+            console.log(this.TAG, "check err: " + err.toString())
           })
         }
 
         engine.getVersion().then((ver) => {
-          console.log("Express SDK Version: " + ver)
+          console.log(this.TAG, "Express SDK Version: " + ver)
         });
 
         this.initMinimize();
@@ -99,10 +103,10 @@ class Home extends Component {
   }
 
   componentWillUnmount() {
-    console.log('componentWillUnmount');
+    console.log(this.TAG, 'componentWillUnmount');
 
     if (ZegoExpressEngine.instance()) {
-      console.log('[LZP] destroyEngine')
+      console.log(this.TAG, '[LZP] destroyEngine')
       ZegoExpressEngine.destroyEngine();
     }
   }
