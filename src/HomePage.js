@@ -19,10 +19,6 @@ import {
   Text
 } from 'react-native';
 
-import {
-  Header,
-  Colors,
-} from 'react-native/Libraries/NewAppScreen';
 import DeviceInfo from 'react-native-device-info'
 import { withNavigation } from '@react-navigation/compat';
 
@@ -152,8 +148,6 @@ class Home extends Component {
       <>
         <StatusBar barStyle="dark-content" />
         <SafeAreaView>
-            <Header />
-
             <View style={styles.body}>
               <View style={styles.descContainer}>
                 <Text style={styles.title}>roomID: {RoomConstants.roomID}      userID: {RoomConstants.hostID}</Text>
@@ -188,7 +182,7 @@ class Home extends Component {
 
 const styles = StyleSheet.create({
   body: {
-    backgroundColor: Colors.white,
+    backgroundColor: 'white',
   },
   descContainer: {
     marginTop: 20,
@@ -201,11 +195,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '600',
-    color: Colors.black,
+    color: 'black',
   },
   version: {
     fontSize: 16,
-    color: Colors.black,
+    color: 'black',
   },
 });
 
