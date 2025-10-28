@@ -75,6 +75,7 @@ API_AVAILABLE(ios(15.0))
       self.pipControl = [[AVPictureInPictureController alloc] initWithContentSource:contentSource];
       self.pipControl.delegate = self;
       self.pipControl.canStartPictureInPictureAutomaticallyFromInline = YES;
+      [self.pipControl setValue:[NSNumber numberWithInt:1] forKey:@"controlsStyle"];
       
       self.remoteVideoView = [[KitRemoteView alloc] initWithFrame:CGRectZero];
       [pipCallVC.view addSubview:self.remoteVideoView];
