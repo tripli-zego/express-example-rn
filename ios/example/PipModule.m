@@ -11,11 +11,11 @@
 
 RCT_EXPORT_MODULE();
 
-RCT_EXPORT_METHOD(notifyAndroidPagePipEnable:(BOOL)pipEnable pageName:(NSString *)pageName)
+RCT_EXPORT_METHOD(notifyPagePipEnable:(BOOL)pipEnable pageName:(NSString *)pageName)
 {
   dispatch_async(dispatch_get_main_queue(), ^{
-    NSLog(@"[PipModule] notifyAndroidPagePipEnable, pipEnable: %d, pageName: %@", pipEnable, pageName);
-    [[PipManager sharedInstance] notifyAndroidPagePipEnable:pipEnable pageName:pageName];
+    NSLog(@"[PipModule] notifyPagePipEnable, pipEnable: %d, pageName: %@", pipEnable, pageName);
+    [[PipManager sharedInstance] notifyPagePipEnable:pipEnable pageName:pageName];
   });
 }
 

@@ -23,7 +23,7 @@ const Audience: React.FC = () => {
   useFocusEffect(
     React.useCallback(() => {
       console.log(`${TAG} is focused`);
-      PipModuleHelper.notifyAndroidPagePipEnable(true, TAG)
+      PipModuleHelper.notifyPagePipEnable(true, TAG)
       PipModuleHelper.registerPipModeChangedListener(TAG, (data) => {
         if (typeof data === 'boolean') {
           setIsShowTopButton(!data)

@@ -107,7 +107,7 @@ API_AVAILABLE(ios(15.0))
   self.remoteVideoView = NULL;
 }
 
-- (void)notifyAndroidPagePipEnable:(BOOL)pipEnable pageName:(NSString *)pageName {
+- (void)notifyPagePipEnable:(BOOL)pipEnable pageName:(NSString *)pageName {
   if (!pipEnable) {
     [self.pipControl stopPictureInPicture];
     self.pipControl = NULL;

@@ -21,8 +21,8 @@ export default class PipModuleHelper {
       this._onPipModeChangedListenerMap = {}
     }
 
-    static notifyAndroidPagePipEnable = (pipEnable: boolean, pageName: string = 'unknown') => {
-      PipModule.notifyAndroidPagePipEnable(pipEnable, pageName);
+    static notifyPagePipEnable = (pipEnable: boolean, pageName: string = 'unknown') => {
+      PipModule.notifyPagePipEnable(pipEnable, pageName);
     }
 
     // Only supports Android temporarily.

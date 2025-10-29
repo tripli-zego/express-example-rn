@@ -27,13 +27,13 @@ public class PipModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void notifyAndroidPagePipEnable(boolean pipEnable, String pageName) {
+    public void notifyPagePipEnable(boolean pipEnable, String pageName) {
         MainActivity mainActivity = (MainActivity) getCurrentActivity();
         if (mainActivity == null) {
             return;
         }
 
-        mainActivity.notifyAndroidPagePipEnable(pipEnable, pageName);
+        mainActivity.notifyPagePipEnable(pipEnable, pageName);
     }
 
     @ReactMethod

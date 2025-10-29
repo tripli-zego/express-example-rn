@@ -121,7 +121,7 @@ class Home extends Component {
     this.focusListener = this.props.navigation.addListener('focus', () => {
       console.log(`${this.TAG} is focused`);
 
-      PipModuleHelper.notifyAndroidPagePipEnable(false, this.TAG)
+      PipModuleHelper.notifyPagePipEnable(false, this.TAG)
     });
   }
 

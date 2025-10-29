@@ -69,7 +69,7 @@ class MainActivity : ReactActivity() {
         }
     }
 
-    fun notifyAndroidPagePipEnable(pipEnable: Boolean, pageName: String) {
+    fun notifyPagePipEnable(pipEnable: Boolean, pageName: String) {
         Log.i(TAG, String.format("notifyPage: %s, pipEnable: %b", pageName, pipEnable))
 
         pipAutoEnterEnabled = pipEnable
