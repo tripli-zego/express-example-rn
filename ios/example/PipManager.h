@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)startPlayingStream:(NSString *)streamID rnVideoView:(RCTView *)rnVideoView viewMode:(ZegoViewMode)viewMode;
 - (void)stopPlayingStream:(NSString *)streamID;
+- (void)notifyAndroidPagePipEnable:(BOOL)pipEnable pageName:(NSString *)pageName;
 
 @end
 

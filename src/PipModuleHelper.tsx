@@ -22,10 +22,6 @@ export default class PipModuleHelper {
     }
 
     static notifyAndroidPagePipEnable = (pipEnable: boolean, pageName: string = 'unknown') => {
-      if (Platform.OS !== 'android') {
-        return;
-      }
-
       PipModule.notifyAndroidPagePipEnable(pipEnable, pageName);
     }
 

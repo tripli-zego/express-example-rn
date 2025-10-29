@@ -107,6 +107,13 @@ API_AVAILABLE(ios(15.0))
   self.remoteVideoView = NULL;
 }
 
+- (void)notifyAndroidPagePipEnable:(BOOL)pipEnable pageName:(NSString *)pageName {
+  if (!pipEnable) {
+    [self.pipControl stopPictureInPicture];
+    self.pipControl = NULL;
+  }
+}
+
 - (AVSampleBufferDisplayLayer *)createAVSampleBufferDisplayLayerWithViewMode:(ZegoViewMode)viewMode
 {
   AVSampleBufferDisplayLayer *layer = [[AVSampleBufferDisplayLayer alloc] init];
