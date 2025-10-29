@@ -28,13 +28,13 @@ export default class StreamHelper {
         {
             console.log(this.TAG, `PipModule.startPlayingStream: ${streamID}`)
             PipModule.startPlayingStream(
-                {streamID: streamID, reactTag: reactTag}
+                {streamID: streamID, reactTag: reactTag, viewMode: 1}
             )
         } else {
             console.log(this.TAG, `Express.startPlayingStream: ${streamID}`)
             ZegoExpressEngine.instance().startPlayingStream(
                 streamID, 
-                {"reactTag": reactTag, "viewMode": 0, "backgroundColor": 0},
+                {"reactTag": reactTag, "viewMode": 1, "backgroundColor": 0},
                 {}
             )
         }

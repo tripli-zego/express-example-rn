@@ -5,7 +5,6 @@
 #import <React/RCTUIManager.h>
 #import <React/RCTView.h>
 
-
 @implementation PipModule
 
 @synthesize bridge = _bridge;
@@ -17,11 +16,12 @@ RCT_EXPORT_METHOD(startPlayingStream:(NSDictionary *)map)
   dispatch_async(dispatch_get_main_queue(), ^{
     NSString *streamID = map[@"streamID"];
     NSNumber *reactTag = map[@"reactTag"];
+    NSNumber *viewMode = map[@"viewMode"];
         
     RCTView *rctView = (RCTView *)[self->_bridge.uiManager viewForReactTag: reactTag];
 
-    NSLog(@"[PipModule] startPlayingStream: %@, reactTag: %@, rnVideoView: %@", streamID, reactTag, rctView);
-    [[PipManager sharedInstance] startPlayingStream:streamID rnVideoView:rctView];
+    NSLog(@"[PipModule] startPlayingStream: %@, reactTag: %@, viewMode: %@, rnVideoView: %@", streamID, reactTag, viewMode, rctView);
+    [[PipManager sharedInstance] startPlayingStream:streamID rnVideoView:rctView viewMode:viewMode.unsignedIntValue];
   });
 }
 

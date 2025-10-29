@@ -3,8 +3,6 @@
 #import "Masonry.h"
 #import "KitRemoteView.h"
 
-@import ZegoExpressEngine;
-
 #define kKitDisplayLayerName   @"KitDisplayLayer"
 
 static dispatch_once_t onceToken;
@@ -20,6 +18,8 @@ API_AVAILABLE(ios(15.0))
 
 @property (nonatomic, strong) KitRemoteView *remoteVideoView;
 @property (nonatomic, strong) AVSampleBufferDisplayLayer *remoteLayer;
+
+@property (nonatomic, assign) ZegoViewMode viewMode;
 
 @end
 
@@ -40,7 +40,9 @@ API_AVAILABLE(ios(15.0))
   return self;
 }
 
-- (void)startPlayingStream:(NSString *)streamID rnVideoView:(RCTView *)rnVideoView {
+- (void)startPlayingStream:(NSString *)streamID rnVideoView:(RCTView *)rnVideoView viewMode:(ZegoViewMode)viewMode {
+  self.viewMode = viewMode;
+  
   // 为 rn view 添加用于自定义渲染的 layer，没找到就添加一个
   [self addRnLayerWithView:rnVideoView];
   
@@ -85,7 +87,7 @@ API_AVAILABLE(ios(15.0))
           make.edges.equalTo(pipCallVC.view);
       }];
       
-      self.remoteLayer = [self createAVSampleBufferDisplayLayer];
+      self.remoteLayer = [self createAVSampleBufferDisplayLayerWithViewMode:self.viewMode];
       [self.remoteVideoView addDisplayLayer:self.remoteLayer];
     }
   }
@@ -105,12 +107,27 @@ API_AVAILABLE(ios(15.0))
   self.remoteVideoView = NULL;
 }
 
-- (AVSampleBufferDisplayLayer *)createAVSampleBufferDisplayLayer
+- (AVSampleBufferDisplayLayer *)createAVSampleBufferDisplayLayerWithViewMode:(ZegoViewMode)viewMode
 {
-    AVSampleBufferDisplayLayer *layer = [[AVSampleBufferDisplayLayer alloc] init];
-    layer.videoGravity = AVLayerVideoGravityResizeAspect;
-    layer.opaque = YES;
-    return layer;
+  AVSampleBufferDisplayLayer *layer = [[AVSampleBufferDisplayLayer alloc] init];
+  layer.opaque = YES;
+  
+  switch (viewMode) {
+    case ZegoViewModeAspectFit:
+      layer.videoGravity = AVLayerVideoGravityResizeAspect;
+      break;
+    case ZegoViewModeAspectFill:
+      layer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+      break;
+    case ZegoViewModeScaleToFill:
+      layer.videoGravity = AVLayerVideoGravityResize;
+      break;
+    default:
+      layer.videoGravity = AVLayerVideoGravityResizeAspect;
+      break;
+  }
+  
+  return layer;
 }
 
 - (void)enableMultiTaskForSDK:(BOOL)enable
@@ -157,6 +174,7 @@ API_AVAILABLE(ios(15.0))
 
 - (void)pictureInPictureController:(AVPictureInPictureController *)pictureInPictureController restoreUserInterfaceForPictureInPictureStopWithCompletionHandler:(void (^)(BOOL restored))completionHandler {
   NSLog(@"pictureInPictureController restoreUserInterface");
+  completionHandler(YES);
 }
 
 #pragma mark - ZegoCustomVideoRenderHandler
@@ -218,7 +236,7 @@ API_AVAILABLE(ios(15.0))
   }
   
   if (!isFoundLayer) {
-    self.rnLayer = [self createAVSampleBufferDisplayLayer];
+    self.rnLayer = [self createAVSampleBufferDisplayLayerWithViewMode:self.viewMode];
     self.rnLayer.name = kKitDisplayLayerName;
     [self.rnVideoView.layer addSublayer:self.rnLayer];
     self.rnLayer.frame = self.rnVideoView.bounds;
@@ -251,7 +269,7 @@ API_AVAILABLE(ios(15.0))
       self.remoteLayer = nil;
     }
   
-    self.remoteLayer = [self createAVSampleBufferDisplayLayer];
+    self.remoteLayer = [self createAVSampleBufferDisplayLayerWithViewMode:self.viewMode];
     [self.remoteVideoView addDisplayLayer:self.remoteLayer];
   }
 }
