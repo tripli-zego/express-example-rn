@@ -20,6 +20,7 @@ API_AVAILABLE(ios(15.0))
 @property (nonatomic, strong) AVSampleBufferDisplayLayer *remoteLayer;
 
 @property (nonatomic, assign) ZegoViewMode viewMode;
+@property (nonatomic, assign) BOOL inBackground;
 
 @end
 
@@ -35,7 +36,12 @@ API_AVAILABLE(ios(15.0))
 - (instancetype)init {
   self = [super init];
   if (self) {
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleApplicationWillEnterForeground:)
+                                                 name:UIApplicationWillEnterForegroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(handleApplicationDidEnterBackground:)
+                                                     name:UIApplicationDidEnterBackgroundNotification object:nil];
   }
   return self;
 }
@@ -156,6 +162,26 @@ API_AVAILABLE(ios(15.0))
     }
 }
 
+- (void)handleApplicationWillEnterForeground:(NSNotification *)notify {
+  NSLog(@"handleApplicationWillEnterForeground");
+  self.inBackground = NO;
+  
+  if (self.pipControl.pictureInPictureActive) {
+    [self.pipControl stopPictureInPicture];
+    __strong AVPictureInPictureController *oldPipControl = self.pipControl;
+    self.pipControl = [[AVPictureInPictureController alloc] initWithContentSource:oldPipControl.contentSource];
+    self.pipControl.delegate = self;
+    self.pipControl.canStartPictureInPictureAutomaticallyFromInline = YES;
+    [self.pipControl setValue:[NSNumber numberWithInt:1] forKey:@"controlsStyle"];
+    oldPipControl = NULL;
+  }
+}
+  
+- (void)handleApplicationDidEnterBackground:(NSNotification *)notify {
+  NSLog(@"handleApplicationDidEnterBackground");
+  self.inBackground = YES;
+}
+
 #pragma mark - AVPictureInPictureControllerDelegate
 - (void)pictureInPictureControllerWillStartPictureInPicture:(AVPictureInPictureController *)pictureInPictureController {
   NSLog(@"pictureInPictureController willStart");
@@ -187,7 +213,7 @@ API_AVAILABLE(ios(15.0))
 #pragma mark - ZegoCustomVideoRenderHandler
 - (void)onRemoteVideoFrameCVPixelBuffer:(CVPixelBufferRef)buffer param:(ZegoVideoFrameParam *)param streamID:(NSString *)streamID
 {
-    AVSampleBufferDisplayLayer *destLayer = self.pipControl.pictureInPictureActive ? self.remoteLayer : self.rnLayer;
+    AVSampleBufferDisplayLayer *destLayer = self.inBackground ? self.remoteLayer : self.rnLayer;
   
     CMSampleBufferRef sampleBuffer = [self createSampleBuffer:buffer];
     if (sampleBuffer) {
