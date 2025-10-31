@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { findNodeHandle, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { findNodeHandle, Image, StyleSheet, TouchableOpacity, View, LayoutChangeEvent } from 'react-native';
 import Toast from 'react-native-root-toast';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
@@ -17,8 +17,10 @@ const Audience: React.FC = () => {
   const { params } = useRoute();
   const { roomID, userID, hostStreamID } = params;
   
-  const textureRef = useRef();
+  const textureRef = useRef<ZegoTextureView | null>(null);
   const [isShowTopButton, setIsShowTopButton] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [rebindOnLayout, setRebindOnLayout] = useState(false);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -55,7 +57,7 @@ const Audience: React.FC = () => {
 
       console.log(TAG, 'startPlayingStream')
       StreamHelper.setIosPipStreamID(hostStreamID)
-      StreamHelper.startPlayingStream(hostStreamID, findNodeHandle(textureRef.current));    
+      StreamHelper.startPlayingStream(hostStreamID, findNodeHandle(textureRef.current));
     });
 
     return () => {
@@ -71,17 +73,25 @@ const Audience: React.FC = () => {
     navigation.goBack()
   };
 
-  const onClickMinimize = () => {
-    MinimizingHelper.instance().setStreamActionInMinimized('PlayingStream', roomID, hostStreamID);
-    MinimizingHelper.instance().notifyMinimize();
-    navigation.goBack();
+  const onClickResize = () => {
+    setIsFullscreen(prev => {
+      setRebindOnLayout(true);
+      return !prev;
+    });
+  };
+
+  const onTextureLayout = (event: LayoutChangeEvent) => {
+    if (rebindOnLayout) {
+      setRebindOnLayout(false);
+      StreamHelper.startPlayingStream(hostStreamID, findNodeHandle(textureRef.current));
+    }
   };
 
   const insets = useSafeAreaInsets();
 
   return (
     <View style={styles.container}>
-      <ZegoTextureView ref={textureRef} style={styles.fullscreenView} />
+      <ZegoTextureView ref={textureRef} style={isFullscreen ? styles.fullscreenView : styles.centeredView} onLayout={onTextureLayout} />
 
       { isShowTopButton ? <View style={[styles.top_btn_container, {top: insets.top}]}>
         <TouchableOpacity style={styles.backBtnPos} onPress={onClickBack}>
@@ -91,7 +101,7 @@ const Audience: React.FC = () => {
           />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.minimizeBtnPos} onPress={onClickMinimize}>
+        <TouchableOpacity style={styles.minimizeBtnPos} onPress={onClickResize}>
           <Image 
             style={styles.minimizeBtnImage} 
             source={require('./resources/icon_minimize.png')} // 替换为你的图片路径
@@ -106,10 +116,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    backgroundColor: 'gray'
+    backgroundColor: 'gray',
+    justifyContent: 'center'
   },
   fullscreenView: {
     flex: 1,
+    backgroundColor: 'black',
+  },
+  centeredView: {
+    alignSelf: 'stretch',
+    width: '100%',
+    height: '60%'
   },
   top_btn_container: {
     position: 'absolute',

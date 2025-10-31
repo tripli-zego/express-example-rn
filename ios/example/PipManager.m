@@ -254,9 +254,12 @@ API_AVAILABLE(ios(15.0))
 }
 
 - (void)addRnLayerWithView:(RCTView *)rnView {
+  NSLog(@"addRnLayerWithView, frame: %@", NSStringFromCGRect(rnView.frame));
   if (self.rnVideoView != rnView) {
     [self.rnVideoView removeObserver:self forKeyPath:@"bounds"];
     self.rnVideoView = rnView;
+  } else {
+    self.rnLayer.frame = rnView.frame;
   }
   
   BOOL isFoundLayer = FALSE;
